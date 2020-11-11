@@ -1,16 +1,16 @@
 <template>
-  <div class="home h-full flex">
+  <div class="h-full flex">
     <SVGGrid
       class="h-full"
       :state="gameState"
       :running="running"
       @cell-clicked="handleCell"
     />
-    <div class="buttons ml-5">
+    <div class="flex flex-grow items-center justify-center">
       <c-button class="ml-1" @click="start">Start</c-button>
       <c-button class="ml-1" @click="stop">Stop</c-button>
       <c-button class="ml-1" @click="randomise">Randomise</c-button>
-      <c-button class="ml-1" @click="reset">Reset</c-button>
+      <c-button class="ml-1" @click="reset">Empty grid</c-button>
     </div>
   </div>
 </template>

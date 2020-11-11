@@ -7,15 +7,19 @@
       :height="cellSize"
       :x="cell.column * cellSize"
       :y="cell.row * cellSize"
-      class="fill-current stroke-current stroke-1 hover:text-teal-400 transition-colors duration-200"
-      :class="cell.alive ? 'text-teal-400' : 'text-gray-600'"
+      class="fill-current stroke-current stroke-1 transition-colors duration-200"
+      :class="
+        cell.alive
+          ? 'text-teal-400 hover:text-gray-700'
+          : 'text-gray-700 hover:text-teal-400'
+      "
       @click="handleClick(cell)"
     />
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { Grid, Cell } from 'conway-game-of-life/dist/types';
 export default defineComponent({
   name: 'SVGGrid',
@@ -43,5 +47,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style></style>

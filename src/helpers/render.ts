@@ -12,7 +12,15 @@ import {
   Renderer,
   MeshBasicMaterial,
 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+let renderer: Renderer;
+let camera: PerspectiveCamera;
+let game: GameOfLife;
+
+const scene = new Scene();
+let cubes: Mesh[] = [];
+
+let animationFramID: number;
 
 const makeInstance = (
   geometry: Geometry,
@@ -55,8 +63,65 @@ const resizeRendererToDisplaySize = (renderer: Renderer) => {
   return needResize;
 };
 
-export const init = (canvas: HTMLCanvasElement, game: GameOfLife) => {
-  const renderer = new WebGLRenderer({ canvas });
+const render = () => {
+  if (resizeRendererToDisplaySize(renderer)) {
+    const canvas = renderer.domElement;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+
+  game.sequence();
+
+  cubes.forEach((cube, index) => {
+    const oldCell = cube.userData as Cell;
+    const cell = game.state.cells[index];
+
+    if (cell.alive !== oldCell.alive) {
+      const color = cell.alive ? 0x44aa88 : 0x181818;
+      if (cell.alive) {
+        setCubeSize(cube, 1, 1, 1);
+      } else {
+        setCubeSize(cube, 1, 1, 0.1);
+      }
+      // @ts-ignore
+      cube.material.color.setHex(color);
+    }
+    cube.userData = cell;
+  });
+
+  renderer.render(scene, camera);
+
+  animationFramID = requestAnimationFrame(render);
+};
+
+export const start = () => {
+  animationFramID = requestAnimationFrame(render);
+};
+
+export const stop = () => {
+  cancelAnimationFrame(animationFramID);
+};
+
+export const reset = () => {
+  game.reset();
+  animationFramID = requestAnimationFrame(render);
+  setTimeout(() => {
+    cancelAnimationFrame(animationFramID);
+  });
+};
+
+export const randomise = () => {
+  game.randomise();
+  animationFramID = requestAnimationFrame(render);
+  setTimeout(() => {
+    cancelAnimationFrame(animationFramID);
+  });
+};
+
+export const init = (canvas: HTMLCanvasElement, GOL: GameOfLife) => {
+  cubes = [];
+  game = GOL;
+  renderer = new WebGLRenderer({ canvas });
 
   const halfWidth = game.state.columns / 2;
   const halfHeight = game.state.rows / 2;
@@ -65,36 +130,20 @@ export const init = (canvas: HTMLCanvasElement, game: GameOfLife) => {
   const aspect = 1;
   const near = 0.1;
   const far = 2000;
-  const camera = new PerspectiveCamera(fov, aspect, near, far);
+  camera = new PerspectiveCamera(fov, aspect, near, far);
 
   camera.position.x = 0;
   camera.position.y = -40;
   camera.position.z = 25;
   camera.lookAt(0, 0, 0);
 
-  const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 0, 0);
-  controls.update();
-
-  const scene = new Scene();
-  // const cubes = new Group();
-  const cubes: Mesh[] = [];
-
   {
     const color = 0xffffff;
     const intensity = 1;
     const light = new DirectionalLight(color, intensity);
-    light.position.set(0, 0, 1);
+    light.position.set(0, 0, 10);
     scene.add(light);
   }
-
-  // {
-  //   const color = 0xffffff;
-  //   const intensity = 1;
-  //   const light = new DirectionalLight(color, intensity);
-  //   light.position.set(0, 0, 1);
-  //   scene.add(light);
-  // }
 
   const boxWidth = 1;
   const boxHeight = 1;
@@ -110,50 +159,8 @@ export const init = (canvas: HTMLCanvasElement, game: GameOfLife) => {
     scene.add(cube);
   }
 
-  function render() {
-    if (resizeRendererToDisplaySize(renderer)) {
-      const canvas = renderer.domElement;
-      camera.aspect = canvas.clientWidth / canvas.clientHeight;
-      camera.updateProjectionMatrix();
-    }
-
-    game.sequence();
-
-    cubes.forEach((cube, index) => {
-      const oldCell = cube.userData as Cell;
-      const cell = game.state.cells[index];
-
-      if (cell.alive !== oldCell.alive) {
-        const color = cell.alive ? 0x44aa88 : 0x181818;
-        if (cell.alive) {
-          setCubeSize(cube, 1, 1, 1);
-        } else {
-          setCubeSize(cube, 1, 1, 0.1);
-        }
-        // @ts-ignore
-        cube.material.color.setHex(color);
-      }
-      cube.userData = cell;
-    });
-
-    renderer.render(scene, camera);
-
-    requestAnimationFrame(render);
-  }
-
-  requestAnimationFrame(render);
-
-  controls.addEventListener('change', render);
-  window.addEventListener('resize', render);
-
-  // note: this is a workaround for an OrbitControls issue
-  // in an iframe. Will remove once the issue is fixed in
-  // three.js
-  window.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    window.focus();
-  });
-  window.addEventListener('keydown', (e) => {
-    e.preventDefault();
+  animationFramID = requestAnimationFrame(render);
+  setTimeout(() => {
+    cancelAnimationFrame(animationFramID);
   });
 };

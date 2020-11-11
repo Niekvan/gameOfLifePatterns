@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/canvas',
     name: 'Canvas',
     component: () =>
-      import(/* webpackChunkName: "canvas" */ '../views/About.vue'),
+      import(/* webpackChunkName: "canvas" */ '../views/Canvas.vue'),
   },
   {
     path: '/3d',
