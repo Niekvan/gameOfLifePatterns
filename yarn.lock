@@ -2891,8 +2891,8 @@ convert-source-map@^1.7.0:
     safe-buffer "~5.1.1"
 
 conway-game-of-life@Niekvan/gameOfLife:
-  version "1.0.0"
-  resolved "https://codeload.github.com/Niekvan/gameOfLife/tar.gz/8000369dfd67adc05571136c74d4f41b173a48f5"
+  version "1.1.1"
+  resolved "https://codeload.github.com/Niekvan/gameOfLife/tar.gz/ba754bf69bf75aefcdef3490c7b4fcef59913b8d"
 
 cookie-signature@1.0.6:
   version "1.0.6"
@@ -8415,6 +8415,11 @@ thread-loader@^2.1.3:
     loader-runner "^2.3.1"
     loader-utils "^1.1.0"
     neo-async "^2.6.0"
+
+three@^0.122.0:
+  version "0.122.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.122.0.tgz#bd9ed8a8820074856e8ba7b63fe0a65176e01aeb"
+  integrity sha512-bgYMo0WdaQhf7DhLE8OSNN/rVFO5J4K1A2VeeKqoV4MjjuHjfCP6xLpg8Xedhns7NlEnN3sZ6VJROq19Qyl6Sg==
 
 through2@^2.0.0:
   version "2.0.5"

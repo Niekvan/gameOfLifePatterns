@@ -1,18 +1,22 @@
 <template>
-  <svg :viewBox="`0 0 ${state.columns} ${state.rows}`">
+  <svg :viewBox="`0 0 ${state.columns * cellSize} ${state.rows * cellSize}`">
     <rect
       :key="cell.index"
-      v-for="cell in cells"
-      width="1"
-      height="1"
-      :transform="transfromCell(cell)"
+      v-for="cell in state.cells"
+      :width="cellSize"
+      :height="cellSize"
+      :x="cell.column * cellSize"
+      :y="cell.row * cellSize"
+      class="fill-current stroke-current stroke-1 hover:text-teal-400 transition-colors duration-200"
+      :class="cell.alive ? 'text-teal-400' : 'text-gray-600'"
+      @click="handleClick(cell)"
     />
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { Cell, Grid } from 'conway-game-of-life/dist/types';
+import { defineComponent, ref, watchEffect } from 'vue';
+import { Grid, Cell } from 'conway-game-of-life/dist/types';
 export default defineComponent({
   name: 'SVGGrid',
 
@@ -23,16 +27,18 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
-    const cells = ref(props.state.cells);
+  emits: ['cell-clicked'],
 
-    const transfromCell = (cell: Cell): string => {
-      return `translate(${cell.column}, ${cell.row})`;
+  setup(props, { emit }) {
+    const cellSize = ref(10);
+
+    const handleClick = (cell: Cell) => {
+      emit('cell-clicked', cell);
     };
 
     return {
-      cells,
-      transfromCell,
+      cellSize,
+      handleClick,
     };
   },
 });

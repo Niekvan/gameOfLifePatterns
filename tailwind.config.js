@@ -5,7 +5,11 @@ module.exports = {
   },
   purge: ['./public/**/*.html', './src/**/*.vue'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        Bagnard: ['Bagnard'],
+      },
+    },
   },
   variants: {},
   plugins: [],
